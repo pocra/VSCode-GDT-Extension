@@ -1,82 +1,49 @@
-// The module 'vscode' contains the VS Code extensibility API
 import * as vscode from 'vscode';
-import * as LoadDescriptions from './lib/LoadDescriptions';
-import * as FixLengthVariables from './lib/FixLengthVariables';
-import * as DisplayMessage from './lib/DisplayMessage';
-import { SupportedLanguageIds } from './lib/LanguageDictionary';
+import { profileLabel } from './core/analyzer';
+import { deactivateAttachments, registerAttachments } from './features/attachments';
+import { registerCommands } from './features/commands';
+import { registerDiagnostics } from './features/diagnostics';
+import { registerHover } from './features/hover';
+import { registerNavigation } from './features/navigation';
+import { forget, getAnalysis, invalidateConfig, isXdt } from './features/state';
 
-// Constants
-const LoadDescriptionsCommand = 'gdt.LoadDescriptions';
-const FixLengthVariablesCommand = 'gdt.FixLengthVariables';
-const DisplayMessageCommand = 'gdt.DisplayMessage';
-
-/**
-* This method is called when your extension is activated
-*/
 export function activate(context: vscode.ExtensionContext) {
-	console.log('Activating GDT extension');
+    const diagnostics = registerDiagnostics(context);
+    registerHover(context);
+    registerNavigation(context);
+    registerCommands(context);
+    registerAttachments(context);
 
-	// Register commands:
-	let displayMessageCommand = vscode.commands.registerCommand(DisplayMessageCommand, function () {
-		console.log('DisplayMessageCommand called');
-		let document = GetActiveGdtDocument();
-		if (document)
-			DisplayMessage.ShowOutput(document);
-	});
-	context.subscriptions.push(displayMessageCommand);
+    // status bar: detected profile + version
+    const status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    status.command = 'xdt.showMessage';
+    status.tooltip = 'xDT: Nachricht mit Beschreibungen anzeigen';
+    context.subscriptions.push(status);
+    const updateStatus = () => {
+        const doc = vscode.window.activeTextEditor?.document;
+        if (!isXdt(doc)) { status.hide(); return; }
+        const a = getAnalysis(doc);
+        status.text = `$(file-code) ${profileLabel(a.profile)}${a.version ? ' · ' + a.version : ''}`;
+        status.show();
+    };
+    updateStatus();
 
-	let fixLengthVariablesCommand = vscode.commands.registerCommand(FixLengthVariablesCommand, function () {
-		console.log('FixLengthVariablesCommand called');
-		let document = GetActiveGdtDocument();
-		if (document)
-			FixLengthVariables.ShowResult(document);
-	});
-	context.subscriptions.push(fixLengthVariablesCommand);
-
-	let loadDescriptionsCommand = vscode.commands.registerCommand(LoadDescriptionsCommand, function () {
-		console.log('LoadDescriptionsCommand called');
-		let document = GetActiveGdtDocument();
-		if (document)
-			LoadDescriptions.ShowTooltips(document);
-	});
-	context.subscriptions.push(loadDescriptionsCommand);
-
-	// Event: ActiveTextEditor changed
-	vscode.window.onDidChangeActiveTextEditor(function () {
-		console.log('ActiveTextEditor changed')
-		let document = GetActiveGdtDocument();
-		if (document)
-			LoadDescriptions.ShowTooltips(document);
-	}, null, context.subscriptions);
-
-	// Event: TextDocument changed
-	vscode.workspace.onDidChangeTextDocument(function (event) {
-		console.log('TextDocument changed')
-		let document = GetActiveGdtDocument();
-		if (document && event.document === document)
-			LoadDescriptions.ShowTooltips(document);
-	}, null, context.subscriptions);
-
-	// Start:
-	let document = GetActiveGdtDocument();
-	if (document)
-		LoadDescriptions.ShowTooltips(document);
-
-	/**
-	 * Get TextDocument with GDT LanguageID
-	 */
-	function GetActiveGdtDocument(): vscode.TextDocument | undefined {
-		let activeTextEditor = vscode.window.activeTextEditor;
-		if (activeTextEditor && SupportedLanguageIds.includes(activeTextEditor.document.languageId))
-			return activeTextEditor.document;
-		else
-			return undefined;
-	}
+    context.subscriptions.push(
+        vscode.window.onDidChangeActiveTextEditor(updateStatus),
+        vscode.workspace.onDidChangeTextDocument(e => {
+            if (e.document === vscode.window.activeTextEditor?.document) { updateStatus(); }
+        }),
+        vscode.workspace.onDidCloseTextDocument(forget),
+        vscode.workspace.onDidChangeConfiguration(e => {
+            if (e.affectsConfiguration('xdt') || e.affectsConfiguration('gdt')) {
+                invalidateConfig();
+                diagnostics.refreshAll();
+                updateStatus();
+            }
+        }),
+    );
 }
 
-/**
- * This method is called when your extension is deactivated
- */
 export function deactivate() {
-	console.log('Deactivating GDT extension');
+    deactivateAttachments();
 }

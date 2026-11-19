@@ -1,138 +1,359 @@
 {
-    "name": "gdt",
-    "displayName": "GDT",
-    "description": "GDT, LDT and KVDT Language Support for Visual Studio Code",
-    "version": "2.0.0",
-    "publisher": "Lixfeld",
+    "name": "xdt",
+    "displayName": "xDT – GDT, LDT & KVDT",
+    "description": "Syntax highlighting, validation, hovers and outline for the German xDT formats GDT (2.1–3.5), LDT (2/3) and KVDT. Fork of Lixfeld/VSCode-GDT-Extension.",
+    "version": "3.1.1",
+    "publisher": "pocra",
     "icon": "images/Logo.PNG",
     "license": "MIT",
     "repository": {
-		"type": "git",
-        "url": "https://github.com/Lixfeld/VSCode-GDT-Extension.git"
-	},
-    "engines": {
-        "vscode": "^1.55.0"
+        "type": "git",
+        "url": "https://github.com/pocra/VSCode-xDT-Extension.git"
     },
-    "categories": [
-        "Programming Languages"
-    ],
+    "engines": {
+        "vscode": "^1.85.0"
+    },
     "activationEvents": [
         "onLanguage:gdt",
         "onLanguage:ldt",
-        "onLanguage:kvdt",
-		"onCommand:gdt.LoadDescriptions"
-	],
-	"main": "./out/extension.js",
+        "onLanguage:kvdt"
+    ],
+    "categories": [
+        "Programming Languages",
+        "Linters",
+        "Formatters"
+    ],
+    "keywords": [
+        "GDT",
+        "LDT",
+        "KVDT",
+        "xDT",
+        "BDT",
+        "KBV",
+        "QMS",
+        "Praxisverwaltung",
+        "PVS",
+        "Labor"
+    ],
+    "main": "./out/extension.js",
     "contributes": {
+        "languages": [
+            {
+                "id": "gdt",
+                "aliases": [
+                    "GDT",
+                    "gdt"
+                ],
+                "extensions": [
+                    ".gdt",
+                    ".GDT"
+                ],
+                "firstLine": "^\\d{3}8000(6300|6301|6302|6303|6310|6311)"
+            },
+            {
+                "id": "ldt",
+                "aliases": [
+                    "LDT",
+                    "ldt"
+                ],
+                "extensions": [
+                    ".ldt",
+                    ".LDT"
+                ],
+                "firstLine": "^\\d{3}8000(8220|8230)"
+            },
+            {
+                "id": "kvdt",
+                "aliases": [
+                    "KVDT",
+                    "kvdt",
+                    "ADT"
+                ],
+                "extensions": [
+                    ".con",
+                    ".CON",
+                    ".kvdt"
+                ],
+                "firstLine": "^\\d{3}8000con0"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "gdt",
+                "scopeName": "source.gdt",
+                "path": "./syntaxes/gdt.tmLanguage.json"
+            },
+            {
+                "language": "ldt",
+                "scopeName": "source.ldt",
+                "path": "./syntaxes/ldt.tmLanguage.json"
+            },
+            {
+                "language": "kvdt",
+                "scopeName": "source.kvdt",
+                "path": "./syntaxes/kvdt.tmLanguage.json"
+            }
+        ],
         "commands": [
-			{
-				"command": "gdt.LoadDescriptions",
-				"title": "GDT: Load field and record type descriptions"
-			},
             {
-				"command": "gdt.FixLengthVariables",
-				"title": "GDT: Fix length of line variables"
-			},
+                "command": "xdt.fixLengths",
+                "title": "Feld- und Satzlängen korrigieren",
+                "category": "xDT"
+            },
             {
-				"command": "gdt.DisplayMessage",
-				"title": "GDT: Display message with descriptions"
-			}
-		],
-        "languages": [{
-            "id": "gdt",
-            "aliases": ["GDT", "gdt"],
-            "extensions": [".gdt",".GDT"]
+                "command": "xdt.showMessage",
+                "title": "Nachricht mit Beschreibungen anzeigen",
+                "category": "xDT"
+            },
+            {
+                "command": "xdt.anonymize",
+                "title": "Patientendaten anonymisieren",
+                "category": "xDT"
+            },
+            {
+                "command": "xdt.setCrlf",
+                "title": "Zeilenenden auf CR/LF umstellen",
+                "category": "xDT"
+            },
+            {
+                "command": "xdt.openAttachment",
+                "title": "Base64-Anhang anzeigen",
+                "category": "xDT"
+            },
+            {
+                "command": "xdt.saveAttachment",
+                "title": "Base64-Anhang speichern unter …",
+                "category": "xDT"
+            },
+            {
+                "command": "xdt.foldAttachments",
+                "title": "Alle Base64-Anhänge einklappen",
+                "category": "xDT"
+            },
+            {
+                "command": "xdt.unfoldAttachments",
+                "title": "Alle Base64-Anhänge aufklappen",
+                "category": "xDT"
+            }
+        ],
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "xdt.fixLengths",
+                    "when": "editorLangId =~ /^(gdt|ldt|kvdt)$/"
+                },
+                {
+                    "command": "xdt.showMessage",
+                    "when": "editorLangId =~ /^(gdt|ldt|kvdt)$/"
+                },
+                {
+                    "command": "xdt.anonymize",
+                    "when": "editorLangId =~ /^(gdt|ldt|kvdt)$/"
+                },
+                {
+                    "command": "xdt.setCrlf",
+                    "when": "editorLangId =~ /^(gdt|ldt|kvdt)$/"
+                },
+                {
+                    "command": "xdt.openAttachment",
+                    "when": "editorLangId =~ /^(gdt|ldt|kvdt)$/"
+                },
+                {
+                    "command": "xdt.saveAttachment",
+                    "when": "editorLangId =~ /^(gdt|ldt|kvdt)$/"
+                },
+                {
+                    "command": "xdt.foldAttachments",
+                    "when": "editorLangId =~ /^(gdt|ldt|kvdt)$/"
+                },
+                {
+                    "command": "xdt.unfoldAttachments",
+                    "when": "editorLangId =~ /^(gdt|ldt|kvdt)$/"
+                }
+            ],
+            "editor/title": [
+                {
+                    "command": "xdt.showMessage",
+                    "when": "editorLangId =~ /^(gdt|ldt|kvdt)$/",
+                    "group": "navigation@99"
+                }
+            ]
         },
-        {
-            "id": "ldt",
-            "aliases": ["LDT", "ldt"],
-            "extensions": [".ldt",".LDT"],
-            "firstLine": "^\\d{3}8000(8220|8230)"
-        },
-        {
-            "id": "kvdt",
-            "aliases": ["KVDT", "kvdt"],
-            "extensions": [".con",".CON"],
-            "firstLine": "^\\d{3}8000con0"
-        }],
-        "grammars": [{
-            "language": "gdt",
-            "scopeName": "source.gdt",
-            "path": "./syntaxes/gdt.tmLanguage.json"
-        },
-        {
-            "language": "ldt",
-            "scopeName": "source.ldt",
-            "path": "./syntaxes/ldt.tmLanguage.json"
-        },
-        {
-            "language": "kvdt",
-            "scopeName": "source.kvdt",
-            "path": "./syntaxes/kvdt.tmLanguage.json"
-        }],
         "configurationDefaults": {
             "[gdt]": {
                 "files.encoding": "iso885915",
                 "files.eol": "\r\n",
-                "files.trimTrailingWhitespace": false
+                "files.trimTrailingWhitespace": false,
+                "editor.wordBasedSuggestions": "off",
+                "editor.quickSuggestions": {
+                    "other": "on",
+                    "comments": "off",
+                    "strings": "on"
+                }
             },
             "[ldt]": {
                 "files.encoding": "iso885915",
                 "files.eol": "\r\n",
-                "files.trimTrailingWhitespace": false
+                "files.trimTrailingWhitespace": false,
+                "editor.wordBasedSuggestions": "off",
+                "editor.quickSuggestions": {
+                    "other": "on",
+                    "comments": "off",
+                    "strings": "on"
+                }
             },
             "[kvdt]": {
                 "files.encoding": "iso885915",
                 "files.eol": "\r\n",
-                "files.trimTrailingWhitespace": false
+                "files.trimTrailingWhitespace": false,
+                "editor.wordBasedSuggestions": "off",
+                "editor.quickSuggestions": {
+                    "other": "on",
+                    "comments": "off",
+                    "strings": "on"
+                }
             }
         },
         "configuration": {
-            "title": "GDT",
+            "title": "xDT",
             "properties": {
-                "gdt.Language": {
+                "xdt.language": {
                     "type": "string",
-                    "default": "English",
-                    "enum": ["German", "English"],
-                    "description": "Language for field/tooltip descriptions"
+                    "default": "German",
+                    "enum": [
+                        "German",
+                        "English"
+                    ],
+                    "description": "Sprache der Beschreibungen. Englisch ist nur für GDT-2.x-Felder verfügbar, LDT/KVDT sind immer deutsch."
                 },
-                "gdt.CustomRecordTypes": {
+                "xdt.customFieldIdentifiers": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
                     },
                     "default": {},
-                    "description": "Add new record types or overwrite existing ones"
+                    "markdownDescription": "Eigene Feldkennungen ergänzen oder überschreiben, z.B. `{\"8402\": \"Kennfeld\"}`. Gilt für alle Dialekte. Die alte Einstellung `gdt.CustomFieldIdentifiers` wird weiterhin gelesen."
                 },
-                "gdt.CustomFieldIdentifiers": {
+                "xdt.customRecordTypes": {
                     "type": "object",
                     "additionalProperties": {
                         "type": "string"
                     },
                     "default": {},
-                    "description": "Add new field identifiers or overwrite existing ones"
-                }            
+                    "description": "Eigene Satzarten ergänzen oder überschreiben."
+                },
+                "xdt.validation.enabled": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Struktur- und Feldprüfungen aktivieren (Feldlängen werden immer geprüft)."
+                },
+                "xdt.validation.fieldFormat": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Inhalte gegen die Feldtabellen prüfen (Länge, Typ, Datumsformat, erlaubte Werte)."
+                },
+                "xdt.validation.checksums": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Prüfziffern von LANR und Versicherten-ID kontrollieren."
+                },
+                "xdt.validation.unknownFields": {
+                    "type": "string",
+                    "default": "hint",
+                    "enum": [
+                        "off",
+                        "hint",
+                        "info"
+                    ],
+                    "description": "Unbekannte Feldkennungen markieren."
+                },
+                "xdt.fixLengthsOnSave": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Feld- und Satzlängen beim Speichern automatisch korrigieren."
+                },
+                "xdt.outline.showFields": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "In der Gliederung neben Sätzen und Objekten auch einzelne Felder anzeigen."
+                },
+                "xdt.anonymize.fields": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "3000",
+                        "3100",
+                        "3101",
+                        "3102",
+                        "3103",
+                        "3104",
+                        "3105",
+                        "3106",
+                        "3107",
+                        "3109",
+                        "3112",
+                        "3113",
+                        "3115",
+                        "3119",
+                        "3120",
+                        "3121",
+                        "3122",
+                        "3123",
+                        "3618",
+                        "3619",
+                        "3626",
+                        "7330",
+                        "7331",
+                        "7332",
+                        "7333",
+                        "7335",
+                        "7358",
+                        "8601",
+                        "8602",
+                        "8606",
+                        "8607"
+                    ],
+                    "description": "Feldkennungen, die „xDT: Patientendaten anonymisieren“ ersetzt."
+                },
+                "xdt.attachments.foldOnOpen": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Base64-Anhänge (FK 6329) beim Öffnen einer Datei automatisch einklappen."
+                },
+                "xdt.attachments.inlineInfo": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Hinter der ersten Base64-Zeile Typ und Größe des Anhangs anzeigen."
+                },
+                "xdt.attachments.pdfViewer": {
+                    "type": "string",
+                    "default": "system",
+                    "enum": [
+                        "system",
+                        "vscode"
+                    ],
+                    "enumDescriptions": [
+                        "Mit dem Standardprogramm des Betriebssystems öffnen (Vorschau, Acrobat …)",
+                        "In VS Code öffnen – benötigt eine PDF-Viewer-Extension"
+                    ],
+                    "description": "Womit PDF-Anhänge angezeigt werden."
+                }
             }
         }
     },
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile && npm run lint",
-		"lint": "eslint src --ext ts"
-	},
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "test": "npm run compile && node test/core.test.js",
+        "package": "vsce package"
+    },
     "devDependencies": {
-		"@types/vscode": "^1.55.0",
-		"@types/glob": "^7.1.3",
-		"@types/mocha": "^8.2.2",
-		"@types/node": "14.x",
-		"eslint": "^7.27.0",
-		"@typescript-eslint/eslint-plugin": "^4.26.0",
-		"@typescript-eslint/parser": "^4.26.0",
-		"glob": "^7.1.7",
-		"mocha": "^8.4.0",
-		"typescript": "^4.3.2",
-		"vscode-test": "^1.5.2"
-	}
+        "@types/vscode": "~1.85.0",
+        "@types/node": "18.x",
+        "typescript": "^5.4.0",
+        "@vscode/vsce": "^3.0.0"
+    }
 }

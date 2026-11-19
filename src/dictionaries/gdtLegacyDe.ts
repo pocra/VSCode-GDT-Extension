@@ -1,3 +1,4 @@
+// GDT 2.1 / 3.0 / 3.1 field descriptions – unchanged from upstream (Lixfeld/VSCode-GDT-Extension)
 export const recordTypes: {[key: string]: string} = {
     '6300': 'Stammdaten anfordern',
     '6301': 'Stammdaten übermitteln',
@@ -8,7 +9,6 @@ export const recordTypes: {[key: string]: string} = {
 }
 
 export const fieldIdentifiers: {[key: string]: string} = {
-    '0001': 'Version der Datensatzbeschreibung', // Version 3.5
     '0102': 'Softwareverantwortlicher (SV)',
     '0103': 'Software',
     '0132': 'Release-Stand der Software',
@@ -121,9 +121,6 @@ export const fieldIdentifiers: {[key: string]: string} = {
     '8003': 'Objektende',   // Version 3.1
     '8004': 'Satzlänge',    // Version 3.1
     '8100': 'Satzlänge',
-    '8112': 'Anforderung (Objektattribut → Obj_0012)', // Version 3.5
-    '8133': 'Kopfdaten_GDT (Objektattribut → Obj_0033)', // Version 3.5
-    '8157': 'Untersuchungsergebnis_GDT (Objektattribut → Obj_0057)', // Version 3.5
     '8200': 'ObjektIdent',
     '8201': 'Objektende',
     '8202': 'Satzende',
